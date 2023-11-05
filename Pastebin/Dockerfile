@@ -5,7 +5,7 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
-COPY ["Pastebin/Pastebin.csproj", "Pastebin/"]
+COPY ["./", "Pastebin/"]
 RUN dotnet restore "Pastebin/Pastebin.csproj"
 COPY . .
 WORKDIR "/src/Pastebin"
