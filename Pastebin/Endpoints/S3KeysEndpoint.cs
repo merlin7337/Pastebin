@@ -1,6 +1,5 @@
 ﻿using Amazon.S3;
 using Amazon.S3.Model;
-using Microsoft.AspNetCore.Http.Extensions;
 using Pastebin.Database;
 
 namespace Pastebin.Endpoints;
@@ -10,7 +9,7 @@ public static class S3KeysEndpoint
     public static void MapS3Keys(this RouteGroupBuilder app)
     {
         //docker test
-        app.MapGet("/", () => {});
+        app.MapGet("/", () => "Hello!");
         //docker test
         
         app.MapGet("/{hash}",

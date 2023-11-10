@@ -1,25 +1,27 @@
 {
   "format": 1,
   "restore": {
-    "D:\\Rider projects\\Pastebin\\Pastebin\\Pastebin.csproj": {}
+    "F:\\Rider projects\\Pastebin\\Pastebin\\Pastebin.csproj": {}
   },
   "projects": {
-    "D:\\Rider projects\\Pastebin\\Pastebin\\Pastebin.csproj": {
+    "F:\\Rider projects\\Pastebin\\Pastebin\\Pastebin.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Rider projects\\Pastebin\\Pastebin\\Pastebin.csproj",
+        "projectUniqueName": "F:\\Rider projects\\Pastebin\\Pastebin\\Pastebin.csproj",
         "projectName": "Pastebin",
-        "projectPath": "D:\\Rider projects\\Pastebin\\Pastebin\\Pastebin.csproj",
+        "projectPath": "F:\\Rider projects\\Pastebin\\Pastebin\\Pastebin.csproj",
         "packagesPath": "C:\\Users\\danyk\\.nuget\\packages\\",
-        "outputPath": "D:\\Rider projects\\Pastebin\\Pastebin\\obj\\",
+        "outputPath": "F:\\Rider projects\\Pastebin\\Pastebin\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\danyk\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\danyk\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "net7.0"
         ],
         "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {

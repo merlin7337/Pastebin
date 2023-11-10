@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "SsQ+lmwFqemdErCF0WukHdJe5VEdS8cnYyJdr7qBx+2NnB/So5RU6pwD+Bcd86uH0rv48THvQt3rHX4OhO/DdQ==",
+  "dgSpecHash": "MVGj8metwudRmXfT9C2hHwUB01cZcN6WAZ1G7zUaZGrd+SUbhXAHgEdoddKvoo1E2yZtOw4eZxsxqflBnXThiw==",
   "success": true,
-  "projectFilePath": "D:\\Rider projects\\Pastebin\\Pastebin\\Pastebin.csproj",
+  "projectFilePath": "F:\\Rider projects\\Pastebin\\Pastebin\\Pastebin.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\danyk\\.nuget\\packages\\awssdk.core\\3.7.204.10\\awssdk.core.3.7.204.10.nupkg.sha512",
     "C:\\Users\\danyk\\.nuget\\packages\\awssdk.extensions.netcore.setup\\3.7.7\\awssdk.extensions.netcore.setup.3.7.7.nupkg.sha512",
