@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "MVGj8metwudRmXfT9C2hHwUB01cZcN6WAZ1G7zUaZGrd+SUbhXAHgEdoddKvoo1E2yZtOw4eZxsxqflBnXThiw==",
+  "dgSpecHash": "6HW8PndhTBlMBr+HqXoMlugV+uLPcwomdTw/75gP8/i606yB42KWqd0rUpCNlev/hGf0LgVfxkExvwCy8QJk6w==",
   "success": true,
   "projectFilePath": "F:\\Rider projects\\Pastebin\\Pastebin\\Pastebin.csproj",
   "expectedPackageFiles": [
@@ -33,6 +33,7 @@
     "C:\\Users\\danyk\\.nuget\\packages\\microsoft.win32.registry\\4.7.0\\microsoft.win32.registry.4.7.0.nupkg.sha512",
     "C:\\Users\\danyk\\.nuget\\packages\\microsoft.win32.systemevents\\4.7.0\\microsoft.win32.systemevents.4.7.0.nupkg.sha512",
     "C:\\Users\\danyk\\.nuget\\packages\\mono.texttemplating\\2.2.1\\mono.texttemplating.2.2.1.nupkg.sha512",
+    "C:\\Users\\danyk\\.nuget\\packages\\ncrontab\\3.3.3\\ncrontab.3.3.3.nupkg.sha512",
     "C:\\Users\\danyk\\.nuget\\packages\\npgsql\\7.0.6\\npgsql.7.0.6.nupkg.sha512",
     "C:\\Users\\danyk\\.nuget\\packages\\npgsql.entityframeworkcore.postgresql\\7.0.11\\npgsql.entityframeworkcore.postgresql.7.0.11.nupkg.sha512",
     "C:\\Users\\danyk\\.nuget\\packages\\runtime.native.system.data.sqlclient.sni\\4.7.0\\runtime.native.system.data.sqlclient.sni.4.7.0.nupkg.sha512",

@@ -8,4 +8,5 @@ public class S3Key
     public Guid Id { get; set; }
 
     public string? Key { get; set; }
+    public DateTime ExpirationDateTime { get; set; }
 }

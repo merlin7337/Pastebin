@@ -16,5 +16,7 @@ public static class ConfigureServices
 
         services.AddDefaultAWSOptions(configuration.GetAWSOptions());
         services.AddAWSService<IAmazonS3>();
+
+        services.AddHostedService<AutoDeletionService>();
     }
 }
