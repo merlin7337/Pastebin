@@ -4,14 +4,14 @@ using NCrontab;
 using Pastebin.Database;
 using Pastebin.Endpoints;
 
-namespace Pastebin;
+namespace Pastebin.Services;
 
 public class AutoDeletionService : BackgroundService
 {
     private readonly CrontabSchedule _schedule;
 
     private readonly IServiceScopeFactory _scopeFactory;
-    
+
     private DateTime _nextRun;
 
     public AutoDeletionService(IServiceScopeFactory scopeFactory)
@@ -40,8 +40,7 @@ public class AutoDeletionService : BackgroundService
 
     private async void Process()
     {
-        var now = DateTime.Now.ToString("yyyy-MM-dd hh:mm"); //refactor to await, remove string formatting
-        Console.WriteLine(now);
+        var now = DateTime.Now.ToString("yyyy-MM-dd hh:mm");
         using var scope = _scopeFactory.CreateScope();
         var dbContext = scope.ServiceProvider.GetRequiredService<PostgreSqlDbContext>();
         var amazonS3Client = scope.ServiceProvider.GetRequiredService<IAmazonS3>();
@@ -50,19 +49,20 @@ public class AutoDeletionService : BackgroundService
         var deleteObjectsRequest = new DeleteObjectsRequest
             { BucketName = configuration.GetSection("BucketName").Value };
 
-        if (S3KeysEndpoint.DeletionQueue.Count == 0) return;
-
-        while (true)
+        if (S3KeysEndpoint.DeletionQueue.Count == 0)
+            return;
+        
+        while (S3KeysEndpoint.DeletionQueue.Count > 0)
         {
-            var s3Key = S3KeysEndpoint.DeletionQueue?.Peek();
-            if (s3Key?.ExpirationDateTime.ToString("yyyy-MM-dd hh:mm") != now) break;
+            var s3Key = S3KeysEndpoint.DeletionQueue.Peek();
+            if (s3Key.ExpirationDateTime.ToString("yyyy-MM-dd hh:mm") != now)
+                break;
             deleteObjectsRequest.AddKey(s3Key.Key);
             dbContext.Keys.Remove(s3Key);
-            S3KeysEndpoint.DeletionQueue?.Dequeue();
+            S3KeysEndpoint.DeletionQueue.Dequeue();
         }
-        await amazonS3Client.DeleteObjectsAsync(deleteObjectsRequest);
-        await dbContext.SaveChangesAsync();
 
-        Console.WriteLine("Process executed");
+        if (deleteObjectsRequest.Objects.Count != 0) await amazonS3Client.DeleteObjectsAsync(deleteObjectsRequest);
+        await dbContext.SaveChangesAsync();
     }
 }

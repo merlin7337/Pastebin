@@ -49,7 +49,9 @@ public static class S3KeysEndpoint
                     .Replace("=", "");
                 return $"https://localhost:7053/{hash}";
             });
-
+        
+        //rewrite delete request
+        //maybe add put request(not necessary)
         app.MapDelete("/{id}", async (PostgreSqlDbContext dbContext, Guid id) =>
         {
             var key = await dbContext.Keys.FindAsync(id);

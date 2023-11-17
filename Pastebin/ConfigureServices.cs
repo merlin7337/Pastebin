@@ -1,6 +1,7 @@
 ﻿using Amazon.S3;
 using Microsoft.EntityFrameworkCore;
 using Pastebin.Database;
+using Pastebin.Services;
 
 namespace Pastebin;
 
