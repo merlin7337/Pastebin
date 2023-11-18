@@ -128,3 +128,4 @@ F:\Rider projects\Pastebin\Pastebin\obj\Debug\net7.0\refint\Pastebin.dll
 F:\Rider projects\Pastebin\Pastebin\obj\Debug\net7.0\Pastebin.pdb
 F:\Rider projects\Pastebin\Pastebin\obj\Debug\net7.0\Pastebin.genruntimeconfig.cache
 F:\Rider projects\Pastebin\Pastebin\obj\Debug\net7.0\ref\Pastebin.dll
+F:\Rider projects\Pastebin\Pastebin\bin\Debug\net7.0\NCrontab.dll

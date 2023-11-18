@@ -1,6 +1,7 @@
 ﻿using Amazon.S3;
 using Microsoft.EntityFrameworkCore;
 using Pastebin.Database;
+using Pastebin.Services;
 
 namespace Pastebin;
 
@@ -16,5 +17,7 @@ public static class ConfigureServices
 
         services.AddDefaultAWSOptions(configuration.GetAWSOptions());
         services.AddAWSService<IAmazonS3>();
+
+        services.AddHostedService<AutoDeletionService>();
     }
 }
