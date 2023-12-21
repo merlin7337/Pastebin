@@ -5,8 +5,8 @@ namespace Pastebin.Database;
 public class S3Key
 {
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public Guid Id { get; set; }
+    public Guid Id { get; init; }
 
-    public string? Key { get; set; }
-    public DateTime ExpirationDateTime { get; set; }
+    public string? Key { get; init; }
+    public DateTime? ExpirationDateTime { get; set; }
 }

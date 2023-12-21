@@ -40,29 +40,35 @@ public class AutoDeletionService : BackgroundService
 
     private async void Process()
     {
+        if (S3KeysEndpoint.DeletionList.Count == 0)
+            return;
+
         var now = DateTime.Now.ToString("yyyy-MM-dd hh:mm");
+
         using var scope = _scopeFactory.CreateScope();
-        var dbContext = scope.ServiceProvider.GetRequiredService<PostgreSqlDbContext>();
+        var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
         var amazonS3Client = scope.ServiceProvider.GetRequiredService<IAmazonS3>();
         var configuration = scope.ServiceProvider.GetRequiredService<IConfiguration>();
 
         var deleteObjectsRequest = new DeleteObjectsRequest
             { BucketName = configuration.GetSection("BucketName").Value };
 
-        if (S3KeysEndpoint.DeletionQueue.Count == 0)
-            return;
-        
-        while (S3KeysEndpoint.DeletionQueue.Count > 0)
+        S3KeysEndpoint.DeletionList.Sort(
+            (x, y) => x.ExpirationDateTime!.Value.CompareTo(y.ExpirationDateTime!.Value));
+
+        while (S3KeysEndpoint.DeletionList.Count > 0)
         {
-            var s3Key = S3KeysEndpoint.DeletionQueue.Peek();
-            if (s3Key.ExpirationDateTime.ToString("yyyy-MM-dd hh:mm") != now)
+            var s3Key = S3KeysEndpoint.DeletionList[0];
+
+            if (s3Key.ExpirationDateTime?.ToString("yyyy-MM-dd hh:mm") != now)
                 break;
+
             deleteObjectsRequest.AddKey(s3Key.Key);
             dbContext.Keys.Remove(s3Key);
-            S3KeysEndpoint.DeletionQueue.Dequeue();
+            S3KeysEndpoint.DeletionList.Remove(s3Key);
         }
 
-        if (deleteObjectsRequest.Objects.Count != 0) await amazonS3Client.DeleteObjectsAsync(deleteObjectsRequest);
+        if (deleteObjectsRequest.Objects.Count > 0) await amazonS3Client.DeleteObjectsAsync(deleteObjectsRequest);
         await dbContext.SaveChangesAsync();
     }
 }

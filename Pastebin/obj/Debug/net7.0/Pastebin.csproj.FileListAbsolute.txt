@@ -129,3 +129,10 @@ F:\Rider projects\Pastebin\Pastebin\obj\Debug\net7.0\Pastebin.pdb
 F:\Rider projects\Pastebin\Pastebin\obj\Debug\net7.0\Pastebin.genruntimeconfig.cache
 F:\Rider projects\Pastebin\Pastebin\obj\Debug\net7.0\ref\Pastebin.dll
 F:\Rider projects\Pastebin\Pastebin\bin\Debug\net7.0\NCrontab.dll
+F:\Rider projects\Pastebin\Pastebin\bin\Debug\net7.0\Microsoft.Extensions.Caching.StackExchangeRedis.dll
+F:\Rider projects\Pastebin\Pastebin\bin\Debug\net7.0\Microsoft.Extensions.Logging.Abstractions.dll
+F:\Rider projects\Pastebin\Pastebin\bin\Debug\net7.0\Microsoft.Extensions.Options.dll
+F:\Rider projects\Pastebin\Pastebin\bin\Debug\net7.0\Pipelines.Sockets.Unofficial.dll
+F:\Rider projects\Pastebin\Pastebin\bin\Debug\net7.0\StackExchange.Redis.dll
+F:\Rider projects\Pastebin\Pastebin\bin\Debug\net7.0\System.Diagnostics.PerformanceCounter.dll
+F:\Rider projects\Pastebin\Pastebin\bin\Debug\net7.0\runtimes\win\lib\netcoreapp2.0\System.Diagnostics.PerformanceCounter.dll

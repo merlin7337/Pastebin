@@ -11,7 +11,7 @@ using Pastebin.Database;
 
 namespace Pastebin.Database.Migrations
 {
-    [DbContext(typeof(PostgreSqlDbContext))]
+    [DbContext(typeof(ApplicationDbContext))]
     [Migration("20231109131602_Initial")]
     partial class Initial
     {
