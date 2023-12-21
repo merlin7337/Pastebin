@@ -5,14 +5,14 @@ using Pastebin.Services;
 
 namespace Pastebin;
 
-public static class ConfigureServices
+public static class DependencyInjection
 {
     public static void AddServices(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen();
 
-        services.AddDbContext<PostgreSqlDbContext>(options =>
+        services.AddDbContext<ApplicationDbContext>(options =>
             options.UseNpgsql(configuration.GetConnectionString("PostgreSQL")));
 
         services.AddDefaultAWSOptions(configuration.GetAWSOptions());

@@ -62,6 +62,10 @@
               "target": "Package",
               "version": "[7.0.13, )"
             },
+            "Microsoft.Extensions.Caching.StackExchangeRedis": {
+              "target": "Package",
+              "version": "[7.0.14, )"
+            },
             "NCrontab": {
               "target": "Package",
               "version": "[3.3.3, )"

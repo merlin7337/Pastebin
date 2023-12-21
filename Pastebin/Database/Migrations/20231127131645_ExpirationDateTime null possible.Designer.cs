@@ -12,8 +12,8 @@ using Pastebin.Database;
 namespace Pastebin.Database.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231111154945_AddExpirationDateTime")]
-    partial class AddExpirationDateTime
+    [Migration("20231127131645_ExpirationDateTime null possible")]
+    partial class ExpirationDateTimenullpossible
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -31,10 +31,11 @@ namespace Pastebin.Database.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<DateTime>("ExpirationDateTime")
+                    b.Property<DateTime?>("ExpirationDateTime")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Key")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("Id");

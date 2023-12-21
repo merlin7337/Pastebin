@@ -10,7 +10,7 @@ using Pastebin.Database;
 
 namespace Pastebin.Database.Migrations
 {
-    [DbContext(typeof(PostgreSqlDbContext))]
+    [DbContext(typeof(ApplicationDbContext))]
     partial class PostgreSqlDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
@@ -28,10 +28,11 @@ namespace Pastebin.Database.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<DateTime>("ExpirationDateTime")
+                    b.Property<DateTime?>("ExpirationDateTime")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Key")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("Id");
