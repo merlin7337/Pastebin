@@ -1,17 +1,13 @@
-﻿using Amazon.S3;
-using Amazon.S3.Model;
-using NCrontab;
-using Pastebin.Database;
+﻿using NCrontab;
 using Pastebin.Endpoints;
+using Pastebin.Interfaces;
 
 namespace Pastebin.Services;
 
 public class AutoDeletionService : BackgroundService
 {
     private readonly CrontabSchedule _schedule;
-
     private readonly IServiceScopeFactory _scopeFactory;
-
     private DateTime _nextRun;
 
     public AutoDeletionService(IServiceScopeFactory scopeFactory)
@@ -46,15 +42,13 @@ public class AutoDeletionService : BackgroundService
         var now = DateTime.Now.ToString("yyyy-MM-dd hh:mm");
 
         using var scope = _scopeFactory.CreateScope();
-        var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-        var amazonS3Client = scope.ServiceProvider.GetRequiredService<IAmazonS3>();
-        var configuration = scope.ServiceProvider.GetRequiredService<IConfiguration>();
-
-        var deleteObjectsRequest = new DeleteObjectsRequest
-            { BucketName = configuration.GetSection("BucketName").Value };
+        var keysRepository = scope.ServiceProvider.GetRequiredService<IKeysRepository>();
+        var textRepository = scope.ServiceProvider.GetRequiredService<ITextRepository>();
 
         S3KeysEndpoint.DeletionList.Sort(
             (x, y) => x.ExpirationDateTime!.Value.CompareTo(y.ExpirationDateTime!.Value));
+
+        var keysToDelete = new List<string>();
 
         while (S3KeysEndpoint.DeletionList.Count > 0)
         {
@@ -63,12 +57,13 @@ public class AutoDeletionService : BackgroundService
             if (s3Key.ExpirationDateTime?.ToString("yyyy-MM-dd hh:mm") != now)
                 break;
 
-            deleteObjectsRequest.AddKey(s3Key.Key);
-            dbContext.Keys.Remove(s3Key);
+            keysToDelete.Add(s3Key.Key!);
+
+            await keysRepository.DeleteByIdAsync(s3Key.Id);
+
             S3KeysEndpoint.DeletionList.Remove(s3Key);
         }
 
-        if (deleteObjectsRequest.Objects.Count > 0) await amazonS3Client.DeleteObjectsAsync(deleteObjectsRequest);
-        await dbContext.SaveChangesAsync();
+        await textRepository.DeleteMultipleByKeysListAsync(keysToDelete);
     }
 }

@@ -1,0 +1,40 @@
+version: '3.4'
+
+services:
+  pastebin:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTP_PORTS=8080
+      - REDIS__PASSWORD=my-password
+      - REDIS__PORT=6379
+      - REDIS__DATABASES=16
+      - Redis__ConnectionString=redis:6379,user=default,password=my-password,abortConnect=false
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=73Merlin37
+      - POSTGRES_DATABASE=PastebinDb
+      - PostgreSql__ConnectionString=Host=localhost;Port=5432;Database=PastebinDb;Username=postgres;Password=73Merlin37
+      - Tools__CacheDbRequests=true
+    ports:
+      - "8080:8080"
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
+  postgres:
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=73Merlin37
+      - POSTGRES_DATABASE=PastebinDb
+    ports:
+      - "5432:5432"
+    volumes:
+      - //c/Program Files/PostgreSQL/16/data
+  redis:
+    environment:
+      - REDIS_PASSWORD=my-password
+      - REDIS_PORT=6379
+      - REDIS_DATABASES=16
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./redisdata:/root/redis
+      - ./redis.conf:/usr/local/etc/redis/redis.conf

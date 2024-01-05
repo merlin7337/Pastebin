@@ -1,0 +1,25 @@
+version: '3.4'
+
+services:
+  pastebin:
+    image: ${DOCKER_REGISTRY-}pastebin
+    build:
+      context: .
+      dockerfile: Pastebin/Dockerfile
+    depends_on:
+      redis:
+        condition: service_started
+      postgres:
+        condition: service_started
+    networks: [ pastebinNetwork ]
+  redis:
+    image: redis:latest
+    restart: always
+    networks: [ pastebinNetwork ]
+  postgres:
+    image: postgres:latest
+    restart: always
+    networks: [ pastebinNetwork ]
+networks:
+  pastebinNetwork:
+    driver: host
