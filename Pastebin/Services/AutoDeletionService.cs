@@ -1,17 +1,14 @@
-﻿using Amazon.S3;
-using Amazon.S3.Model;
-using NCrontab;
-using Pastebin.Database;
+﻿using NCrontab;
 using Pastebin.Endpoints;
+using Pastebin.Interfaces;
 
 namespace Pastebin.Services;
 
 public class AutoDeletionService : BackgroundService
 {
+    private const string DateTimeStringFormat = "yyyy-MM-dd hh:mm";
     private readonly CrontabSchedule _schedule;
-
     private readonly IServiceScopeFactory _scopeFactory;
-
     private DateTime _nextRun;
 
     public AutoDeletionService(IServiceScopeFactory scopeFactory)
@@ -43,32 +40,26 @@ public class AutoDeletionService : BackgroundService
         if (S3KeysEndpoint.DeletionList.Count == 0)
             return;
 
-        var now = DateTime.Now.ToString("yyyy-MM-dd hh:mm");
+        var now = DateTime.Now.ToString(DateTimeStringFormat);
 
         using var scope = _scopeFactory.CreateScope();
-        var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-        var amazonS3Client = scope.ServiceProvider.GetRequiredService<IAmazonS3>();
-        var configuration = scope.ServiceProvider.GetRequiredService<IConfiguration>();
+        var keysRepository = scope.ServiceProvider.GetRequiredService<IKeysRepository>();
+        var textRepository = scope.ServiceProvider.GetRequiredService<ITextRepository>();
 
-        var deleteObjectsRequest = new DeleteObjectsRequest
-            { BucketName = configuration.GetSection("BucketName").Value };
+        var s3KeysToDelete = new List<string>();
 
-        S3KeysEndpoint.DeletionList.Sort(
-            (x, y) => x.ExpirationDateTime!.Value.CompareTo(y.ExpirationDateTime!.Value));
+        var validDateDeletionList =
+            S3KeysEndpoint.DeletionList.Where(x => x.ExpirationDateTime?.ToString(DateTimeStringFormat) == now)
+                .ToList();
+        S3KeysEndpoint.DeletionList.RemoveAll(x => x.ExpirationDateTime?.ToString(DateTimeStringFormat) == now);
 
-        while (S3KeysEndpoint.DeletionList.Count > 0)
+        foreach (var s3Key in validDateDeletionList)
         {
-            var s3Key = S3KeysEndpoint.DeletionList[0];
-
-            if (s3Key.ExpirationDateTime?.ToString("yyyy-MM-dd hh:mm") != now)
-                break;
-
-            deleteObjectsRequest.AddKey(s3Key.Key);
-            dbContext.Keys.Remove(s3Key);
-            S3KeysEndpoint.DeletionList.Remove(s3Key);
+            var test = await keysRepository.DeleteByIdAsync(s3Key.Id);
+            Console.WriteLine(test!.ExpirationDateTime);
+            s3KeysToDelete.Add(s3Key.Key!);
         }
 
-        if (deleteObjectsRequest.Objects.Count > 0) await amazonS3Client.DeleteObjectsAsync(deleteObjectsRequest);
-        await dbContext.SaveChangesAsync();
+        await textRepository.DeleteMultipleByKeysListAsync(s3KeysToDelete);
     }
 }
