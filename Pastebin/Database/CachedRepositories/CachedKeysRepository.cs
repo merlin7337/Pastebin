@@ -61,7 +61,7 @@ public class CachedKeysRepository(
         postgreSql.Keys.Remove(s3Key);
         await postgreSql.SaveChangesAsync();
 
-        await _redis.KeyDeleteAsync(id.ToString());
+        await _redis.KeyDeleteAsync($"{Prefix}:{id.ToString()}");
 
         return s3Key;
     }

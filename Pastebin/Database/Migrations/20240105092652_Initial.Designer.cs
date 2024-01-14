@@ -12,15 +12,15 @@ using Pastebin.Database;
 namespace Pastebin.Database.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231111154945_AddExpirationDateTime")]
-    partial class AddExpirationDateTime
+    [Migration("20240105092652_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.13")
+                .HasAnnotation("ProductVersion", "8.0.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -31,7 +31,7 @@ namespace Pastebin.Database.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<DateTime>("ExpirationDateTime")
+                    b.Property<DateTime?>("ExpirationDateTime")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Key")

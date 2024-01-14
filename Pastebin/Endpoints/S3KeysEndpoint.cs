@@ -32,7 +32,7 @@ public static class S3KeysEndpoint
                 .Replace("+", "_")
                 .Replace("=", "");
 
-            return $"http://localhost:7053/{hash}";
+            return $"http://localhost:8080/{hash}";
         });
 
         app.MapGet("/{hash}", async (
@@ -50,7 +50,7 @@ public static class S3KeysEndpoint
 
             var s3Object = await textRepository.GetByKeyAsync(s3Key.Key!);
 
-            return s3Object is null ? Results.NotFound("S3 object wasn't found") : Results.Ok();
+            return s3Object is null ? Results.NotFound("S3 object wasn't found") : Results.Ok(s3Object);
         });
 
         app.MapPut("/{hash}", async (

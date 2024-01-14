@@ -18,7 +18,7 @@ public class CachedTextRepository(
         var putObjectRequest = new PutObjectRequest
         {
             Key = key,
-            BucketName = configuration.GetSection("BucketName").Value,
+            BucketName = configuration.GetValue<string>("BucketName"),
             ContentBody = text
         };
         putObjectRequest.Metadata.Add("Content-Type", "text/plain");
@@ -34,14 +34,18 @@ public class CachedTextRepository(
         var getObjectRequest = new GetObjectRequest
         {
             Key = key,
-            BucketName = configuration.GetSection("BucketName").Value
+            BucketName = configuration.GetValue<string>("BucketName")
         };
+
         var s3Object = await amazonS3Client.GetObjectAsync(getObjectRequest);
+        if (s3Object is null)
+            return null;
 
         using var sr = new StreamReader(s3Object.ResponseStream);
         text = await sr.ReadToEndAsync();
 
         await _redis.StringSetAsync($"{Prefix}:{key}", text, TimeSpan.FromMinutes(30));
+
         return text;
     }
 
@@ -50,14 +54,14 @@ public class CachedTextRepository(
         var deleteObjectRequest = new DeleteObjectRequest
         {
             Key = key,
-            BucketName = configuration.GetSection("BucketName").Value
+            BucketName = configuration.GetValue<string>("BucketName")
         };
         await amazonS3Client.DeleteObjectAsync(deleteObjectRequest);
 
         var putObjectRequest = new PutObjectRequest
         {
             Key = key,
-            BucketName = configuration.GetSection("BucketName").Value,
+            BucketName = configuration.GetValue<string>("BucketName"),
             ContentBody = text
         };
         putObjectRequest.Metadata.Add("Content-Type", "text/plain");
@@ -72,7 +76,7 @@ public class CachedTextRepository(
         var deleteObjectRequest = new DeleteObjectRequest
         {
             Key = key,
-            BucketName = configuration.GetSection("BucketName").Value
+            BucketName = configuration.GetValue<string>("BucketName")
         };
         await amazonS3Client.DeleteObjectAsync(deleteObjectRequest);
 
@@ -82,7 +86,7 @@ public class CachedTextRepository(
     public async Task DeleteMultipleByKeysListAsync(List<string> keys)
     {
         var deleteObjectsRequest = new DeleteObjectsRequest
-            { BucketName = configuration.GetSection("BucketName").Value };
+            { BucketName = configuration.GetValue<string>("BucketName") };
 
         foreach (var key in keys)
         {
@@ -90,6 +94,7 @@ public class CachedTextRepository(
             await _redis.KeyDeleteAsync($"{Prefix}:{key}");
         }
 
-        await amazonS3Client.DeleteObjectsAsync(deleteObjectsRequest);
+        if (deleteObjectsRequest.Objects.Count > 0)
+            await amazonS3Client.DeleteObjectsAsync(deleteObjectsRequest);
     }
 }

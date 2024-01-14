@@ -1,4 +1,5 @@
-﻿using Amazon.S3;
+﻿using Amazon.Runtime;
+using Amazon.S3;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Pastebin.Database;
@@ -20,7 +21,7 @@ public static class DependencyInjection
         services.AddDbContext<ApplicationDbContext>(options =>
             options.UseNpgsql(configuration.GetValue<string>("ConnectionStrings:PostgreSql")));
 
-        if (configuration.GetValue<bool>("Tools:CacheDbRequest"))
+        if (configuration.GetValue<bool>("Tools:CacheDbRequests"))
         {
             services.AddSingleton<IConnectionMultiplexer>(
                 ConnectionMultiplexer.Connect(configuration.GetValue<string>("ConnectionStrings:Redis")!));
@@ -31,13 +32,17 @@ public static class DependencyInjection
             services.AddScoped<IKeysRepository, PostgreSqlKeysRepository>();
         }
 
-        services.AddDefaultAWSOptions(configuration.GetAWSOptions());
+        var awsOptions = configuration.GetAWSOptions();
+        awsOptions.Credentials = new BasicAWSCredentials(
+            configuration.GetValue<string>("AWS:AccessKey"),
+            configuration.GetValue<string>("AWS:SecretKey"));
+        services.AddDefaultAWSOptions(awsOptions);
         services.AddAWSService<IAmazonS3>();
 
-        if (configuration.GetValue<bool>("Tools:CacheObjectStorageRequest"))
-        { 
+        if (configuration.GetValue<bool>("Tools:CacheObjectStorageRequests"))
+        {
             services.TryAddSingleton<IConnectionMultiplexer>(
-                    ConnectionMultiplexer.Connect(configuration.GetValue<string>("ConnectionStrings:Redis")!));
+                ConnectionMultiplexer.Connect(configuration.GetValue<string>("ConnectionStrings:Redis")!));
             services.AddScoped<ITextRepository, CachedTextRepository>();
         }
         else

@@ -6,6 +6,7 @@ namespace Pastebin.Services;
 
 public class AutoDeletionService : BackgroundService
 {
+    private const string DateTimeStringFormat = "yyyy-MM-dd hh:mm";
     private readonly CrontabSchedule _schedule;
     private readonly IServiceScopeFactory _scopeFactory;
     private DateTime _nextRun;
@@ -39,31 +40,26 @@ public class AutoDeletionService : BackgroundService
         if (S3KeysEndpoint.DeletionList.Count == 0)
             return;
 
-        var now = DateTime.Now.ToString("yyyy-MM-dd hh:mm");
+        var now = DateTime.Now.ToString(DateTimeStringFormat);
 
         using var scope = _scopeFactory.CreateScope();
         var keysRepository = scope.ServiceProvider.GetRequiredService<IKeysRepository>();
         var textRepository = scope.ServiceProvider.GetRequiredService<ITextRepository>();
 
-        S3KeysEndpoint.DeletionList.Sort(
-            (x, y) => x.ExpirationDateTime!.Value.CompareTo(y.ExpirationDateTime!.Value));
+        var s3KeysToDelete = new List<string>();
 
-        var keysToDelete = new List<string>();
+        var validDateDeletionList =
+            S3KeysEndpoint.DeletionList.Where(x => x.ExpirationDateTime?.ToString(DateTimeStringFormat) == now)
+                .ToList();
+        S3KeysEndpoint.DeletionList.RemoveAll(x => x.ExpirationDateTime?.ToString(DateTimeStringFormat) == now);
 
-        while (S3KeysEndpoint.DeletionList.Count > 0)
+        foreach (var s3Key in validDateDeletionList)
         {
-            var s3Key = S3KeysEndpoint.DeletionList[0];
-
-            if (s3Key.ExpirationDateTime?.ToString("yyyy-MM-dd hh:mm") != now)
-                break;
-
-            keysToDelete.Add(s3Key.Key!);
-
-            await keysRepository.DeleteByIdAsync(s3Key.Id);
-
-            S3KeysEndpoint.DeletionList.Remove(s3Key);
+            var test = await keysRepository.DeleteByIdAsync(s3Key.Id);
+            Console.WriteLine(test!.ExpirationDateTime);
+            s3KeysToDelete.Add(s3Key.Key!);
         }
 
-        await textRepository.DeleteMultipleByKeysListAsync(keysToDelete);
+        await textRepository.DeleteMultipleByKeysListAsync(s3KeysToDelete);
     }
 }

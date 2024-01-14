@@ -16,7 +16,8 @@ namespace Pastebin.Database.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Key = table.Column<string>(type: "text", nullable: true)
+                    Key = table.Column<string>(type: "text", nullable: true),
+                    ExpirationDateTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table =>
                 {
